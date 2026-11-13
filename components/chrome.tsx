@@ -25,11 +25,12 @@ export function StatusBar(_props: { metrics?: Metrics }) {
 
 export function FooterBand() {
   return (
-    <section className="mt-6">
+    <section className="mt-8 -mx-4 sm:-mx-6">
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src="/bottom.svg"
-        alt="Proceed with cautions"
+        alt=""
+        aria-hidden="true"
         className="block h-auto w-full"
       />
     </section>
@@ -55,11 +56,13 @@ export function GlobeCard() {
         </div>
         <span className="tag tag-ghost">Connected</span>
       </div>
-      <div className="border-t border-line px-4 py-4">
-        <p className="text-[11.5px] leading-snug text-muted">
-          Workflow automation — trigger follow-ups, bookings and CRM sync from
-          WhatsApp conversations.
-        </p>
+      <div className="border-t border-line bg-white p-3">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="/n8n.svg"
+          alt="n8n workflow"
+          className="block h-auto w-full"
+        />
       </div>
     </div>
   );
