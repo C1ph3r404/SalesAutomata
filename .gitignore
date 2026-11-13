@@ -1,12 +1,6 @@
-node_modules
 .next
-out
-next-env.d.ts
+node_modules
 .env
-.env.local
+.env.*
 *.tsbuildinfo
-.DS_Store
-prisma/dev.db
-prisma/dev.db-journal
-prisma/dev.db-wal
-prisma/dev.db-shm
+dev.db
