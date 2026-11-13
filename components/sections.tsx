@@ -8,22 +8,22 @@ import { ChatThread } from "@/components/chat-thread";
 
 export function TitleRow({ metrics }: { metrics: Metrics }) {
   return (
-    <section className="mt-9 flex flex-wrap items-end justify-between gap-x-8 gap-y-5">
+    <section className="mt-8 flex flex-wrap items-end justify-between gap-x-8 gap-y-5">
       <div>
         <div className="flex flex-wrap items-center gap-3">
           <span className="grid h-5 w-5 place-items-center rounded-[6px] bg-ink text-white">
             <Zap className="h-3 w-3" strokeWidth={2.6} />
           </span>
-          <p className="micro-strong">Al-Noor Realty //</p>
+          <p className="micro-strong">Al-Noor Realty</p>
           <span className="tag tag-blue">Live</span>
         </div>
-        <h1 className="display mt-3 text-[clamp(42px,7vw,84px)] text-ink">
+        <h1 className="display mt-3 text-[clamp(40px,6vw,72px)] text-ink">
           Knight of the Inbox
         </h1>
       </div>
 
       <div className="w-[240px] shrink-0">
-        <p className="display text-[30px] leading-none text-ink">Follow-up</p>
+        <p className="display text-[28px] leading-none text-ink">Follow-up</p>
         <div className="rule mt-3" />
         <p className="micro mt-2.5">
           Auto cadence · {metrics.followups.pending} pending
@@ -40,11 +40,11 @@ export function InfoA({ metrics }: { metrics: Metrics }) {
       <p className="num-xl mt-3 text-ink">
         {metrics.medianFirstReplySeconds}s
       </p>
-      <p className="micro mt-2">// {metrics.leads.total} leads in workspace</p>
+      <p className="micro mt-2">{metrics.leads.total} leads in workspace</p>
 
       <div className="rule-soft my-4" />
 
-      <p className="text-[11.5px] leading-snug text-muted">
+      <p className="text-[12px] leading-snug text-muted">
         Reply instantly, qualify every lead, and book viewings automatically.
       </p>
 
@@ -104,7 +104,7 @@ export function InfoB({ metrics }: { metrics: Metrics }) {
           Auto follow-up cadence
         </span>
         <span className="tag tag-ghost">
-          {metrics.followups.pending > 0 ? "Armed" : "Idle"}
+          {metrics.followups.pending > 0 ? "Active" : "Idle"}
         </span>
       </div>
 
