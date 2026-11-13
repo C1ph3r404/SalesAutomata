@@ -1,0 +1,131 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id         String   @id @default(cuid())
+  name       String
+  initials   String
+  role       String
+  phone      String
+  email      String   @unique
+  timezone   String   @default("Asia/Karachi")
+  status     String   @default("Active")
+  seat       String   @default("Agent")
+  joined     String   @default("—")
+  lastActive String   @default("never")
+  response   String   @default("—")
+  conversion String   @default("—")
+  tint       String   @default("plum")
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  leads      Lead[]
+}
+
+model Lead {
+  id               String        @id @default(cuid())
+  externalId       String?       @unique
+  name             String
+  phone            String?
+  source           String        @default("WhatsApp")
+  requirement      String?
+  intent           String?
+  budget           String?
+  timeline         String?
+  location         String?
+  notes            String?
+  stage            String        @default("NEW")
+  score            Int           @default(0)
+  scoreReason      String        @default("")
+  ownerId          String?
+  handoffRequested Boolean       @default(false)
+  handoffSummary   String?
+  handoffAt        DateTime?
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+  owner            User?         @relation(fields: [ownerId], references: [id], onDelete: SetNull)
+  conversations    Conversation[]
+  messages         Message[]
+  appointments     Appointment[]
+  followups        Followup[]
+
+  @@index([stage])
+  @@index([ownerId])
+  @@index([createdAt])
+}
+
+model Conversation {
+  id            String    @id @default(cuid())
+  leadId        String
+  status        String    @default("bot")
+  assignedTo    String?
+  lastMessageAt DateTime  @default(now())
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  lead          Lead      @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  messages      Message[]
+
+  @@index([leadId])
+}
+
+model Message {
+  id             String        @id @default(cuid())
+  leadId         String
+  conversationId String?
+  direction      String
+  body           String
+  channel        String        @default("whatsapp")
+  waMessageId    String?       @unique
+  status         String        @default("sent")
+  createdAt      DateTime      @default(now())
+  lead           Lead          @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  conversation   Conversation? @relation(fields: [conversationId], references: [id], onDelete: SetNull)
+
+  @@index([leadId, createdAt])
+}
+
+model Appointment {
+  id        String   @id @default(cuid())
+  leadId    String
+  startsAt  DateTime
+  endsAt    DateTime
+  status    String   @default("booked")
+  notes     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  lead      Lead     @relation(fields: [leadId], references: [id], onDelete: Cascade)
+
+  @@index([leadId])
+  @@index([startsAt])
+}
+
+model Followup {
+  id        String    @id @default(cuid())
+  leadId    String
+  runAt     DateTime
+  reason    String
+  step      String    @default("custom")
+  status    String    @default("pending")
+  sentAt    DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  lead      Lead      @relation(fields: [leadId], references: [id], onDelete: Cascade)
+
+  @@index([leadId, runAt])
+}
+
+model Workflow {
+  id        String   @id @default(cuid())
+  name      String
+  status    String   @default("Active")
+  runs      Int      @default(0)
+  last      String   @default("—")
+  desc      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
