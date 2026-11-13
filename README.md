@@ -15,6 +15,8 @@
 
 ```bash
 npm install
+npm run db:push
+npm run db:seed
 npm run dev
 ```
 
@@ -26,23 +28,43 @@ Open http://localhost:3000
 
 ## What's here
 
-The app is currently a **static UI prototype** — no backend, no data fetching.
-Every number on the dashboard is mocked in `lib/data.ts`.
+The app is a working Next.js dashboard backed by SQLite through Prisma. The
+dashboard, leads, users, lead detail, and simulator pages read from the database.
+Writes go through the API routes under `app/api/`.
 
 ```
 app/                 Next.js app router
-  page.tsx           dashboard composition
+  page.tsx           dashboard composition (server component)
+  leads/             leads list, new lead, lead detail
+  sim/               WhatsApp simulator
+  api/               REST API routes
   globals.css        design tokens + component classes
 components/
   chrome.tsx         status bar, footer band, shared marks
   hero.tsx           blue duotone cover panel
-  sections.tsx       title, estimation grid, pipeline cards, chat panel
-  Topbar.tsx         navigation with active state
+  sections.tsx       dashboard metrics, pipeline cards, chat panel
+  Topbar.tsx         navigation + demo reset
   leads.tsx          filterable leads table
-  users.tsx          team table
-  automations.tsx    n8n connection + flow diagram
-lib/data.ts          mock data
-docs/                product + hackathon plans
+  lead-detail.tsx    lead controls, chat, bookings, follow-ups
+  chat-simulator.tsx simulator chat with live polling
+  automations.tsx    n8n connection + workflow list
+lib/
+  types.ts           shared API types
+  schemas.ts         Zod request validation
+  scoring.ts         lead scoring
+  db/                Prisma client, data access, seed
+  turn.ts            fallback `/api/turn` implementation
+prisma/schema.prisma SQLite schema
+docs/                product, hackathon, and remaining-work plans
+```
+
+### Demo commands
+
+```bash
+npm run db:seed      # reset the demo database
+npm run db:studio    # inspect the database
+npm run typecheck    # TypeScript check
+curl -X POST http://localhost:3000/api/reset   # reseed from the app
 ```
 
 ## Pages
@@ -52,6 +74,8 @@ docs/                product + hackathon plans
 | `/` | Dashboard |
 | `/leads` | All leads, filterable by stage |
 | `/leads/new` | New lead form |
+| `/leads/[id]` | Lead detail: card, chat, booking, follow-ups, handoff |
+| `/sim` | WhatsApp simulator with live lead card |
 | `/users` | Team list |
 | `/users/[id]` | Per-user profile |
 | `/automations` | n8n connection and workflow list |

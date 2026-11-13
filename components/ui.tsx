@@ -1,5 +1,12 @@
 import type { ReactNode } from "react";
-import { tints, type Tint } from "@/lib/data";
+import type { Tint } from "@/lib/types";
+
+const tints: Record<Tint, string> = {
+  clay: "bg-accent-soft text-accent-ink",
+  sage: "bg-jade-soft text-jade",
+  sand: "bg-amber-soft text-amber",
+  plum: "bg-surface-2 text-ink-2",
+};
 
 export function Avatar({
   initials,
@@ -73,4 +80,20 @@ export function stageTone(stage: string): "blue" | "ghost" | "dark" {
   if (stage === "HOT") return "blue";
   if (stage === "BOOKED") return "dark";
   return "ghost";
+}
+
+export function LoadingBlock({ label = "Loading…" }: { label?: string }) {
+  return (
+    <div className="panel flex min-h-[160px] items-center justify-center p-6">
+      <p className="micro">{label}</p>
+    </div>
+  );
+}
+
+export function EmptyBlock({ label }: { label: string }) {
+  return (
+    <div className="rounded-xl border border-line bg-paper px-4 py-6 text-center">
+      <p className="text-[12px] text-muted">{label}</p>
+    </div>
+  );
 }

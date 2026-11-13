@@ -57,27 +57,20 @@ npm run dev
 npm run typecheck
 ```
 
-### Frontend — still static
+### Frontend — wired to the backend
 
-The UI currently imports mock data directly from `lib/data.ts`. It has never called the API.
+Pages now read from `lib/db/*` and write through `app/api/*`. `lib/data.ts` is
+only used by `lib/db/seed.ts`.
 
-Files still using mock data:
-
-- `app/page.tsx` — dashboard composition, all static
-- `components/sections.tsx` — metrics, pipeline cards, chat bubbles
-- `components/leads.tsx` — leads table, filters local mock array
-- `components/users.tsx` — team table
-- `app/users/[id]/page.tsx` — profile and assigned leads
-- `app/automations/page.tsx` + `components/automations.tsx` — fake n8n connect
-- `app/leads/new/page.tsx` — form has no submit handler
-- `components/Topbar.tsx` — theme toggle does nothing
-- `components/chrome.tsx` — status bar/footer are decorative
-
-Missing frontend routes:
-
-- [ ] `/leads/[id]` — lead detail with card, chat, booking, follow-ups
-- [ ] `/sim` — WhatsApp simulator
-- [ ] reset-demo control
+- [x] Dashboard reads metrics, pipeline leads, and the active conversation
+- [x] Leads list reads real leads and filters them client-side
+- [x] New lead form posts to `/api/leads`
+- [x] Users list and profile read real users and assigned leads
+- [x] Automations reads real workflows and checks `/api/health`
+- [x] Lead detail route with card, chat, booking, follow-ups, and handoff
+- [x] WhatsApp simulator route with live polling and time-warp
+- [x] Reset-demo control in the top bar, simulator, and lead detail actions
+- [x] Loading, error, empty, and not-found states
 
 ---
 
@@ -208,123 +201,123 @@ Important: server components should import `lib/db/*` directly, not call `/api/.
 
 ### 5.1 Dashboard
 
-- [ ] `app/page.tsx` becomes a dynamic server component.
-- [ ] Fetch `getMetrics()`, `listLeads({ limit: 4 })`, and the latest conversation for the chat panel.
-- [ ] Add `export const dynamic = "force-dynamic";` so the demo never serves stale data.
-- [ ] Pass real data into `sections.tsx` instead of importing mock arrays.
-- [ ] Replace the fake "Syncing WhatsApp leads… 70%" status bar with real data or remove the fake progress.
+- [x] `app/page.tsx` becomes a dynamic server component.
+- [x] Fetch `getMetrics()`, `listLeads({ limit: 4 })`, and the latest conversation for the chat panel.
+- [x] Add `export const dynamic = "force-dynamic";` so the demo never serves stale data.
+- [x] Pass real data into `sections.tsx` instead of importing mock arrays.
+- [x] Replace the fake "Syncing WhatsApp leads… 70%" status bar with real data or remove the fake progress.
 
 ### 5.2 Dashboard components
 
-- [ ] `components/sections.tsx`: change `InfoA`, `InfoB`, `PipelineStrip`, `ChatPanel` to accept props.
-- [ ] `PipelineStrip` uses real leads and links each card to `/leads/[id]`.
-- [ ] `ChatPanel` renders real messages for the selected lead.
-- [ ] `InfoA` uses metrics: median first reply, viewings booked today.
-- [ ] `InfoB` uses metrics: qualification rate, estimated close, cadence count.
+- [x] `components/sections.tsx`: change `InfoA`, `InfoB`, `PipelineStrip`, `ChatPanel` to accept props.
+- [x] `PipelineStrip` uses real leads and links each card to `/leads/[id]`.
+- [x] `ChatPanel` renders real messages for the selected lead.
+- [x] `InfoA` uses metrics: median first reply, viewings booked today.
+- [x] `InfoB` uses metrics: qualification rate, estimated close, cadence count.
 
 ### 5.3 Leads list
 
-- [ ] `app/leads/page.tsx`: fetch `listLeads()` server-side.
-- [ ] `components/leads.tsx`: accept `initialLeads` as a prop instead of importing `leads` from `lib/data`.
-- [ ] Keep client-side stage filtering.
-- [ ] Make every row link to `/leads/[id]`.
-- [ ] Add empty state: "No leads in this stage."
-- [ ] Add a "+ New lead" button that works.
+- [x] `app/leads/page.tsx`: fetch `listLeads()` server-side.
+- [x] `components/leads.tsx`: accept `initialLeads` as a prop instead of importing `leads` from `lib/data`.
+- [x] Keep client-side stage filtering.
+- [x] Make every row link to `/leads/[id]`.
+- [x] Add empty state: "No leads in this stage."
+- [x] Add a "+ New lead" button that works.
 
 ### 5.4 New lead form
 
-- [ ] `app/leads/new/page.tsx`: make it a client component.
-- [ ] Add controlled fields for name, phone, source, requirement, budget, owner, notes.
-- [ ] On submit: `POST /api/leads`.
-- [ ] Show loading state while submitting.
-- [ ] On success: redirect to `/leads/[id]` or `/leads`.
-- [ ] On failure: show the API validation message inline.
+- [x] `app/leads/new/page.tsx`: make it a client component.
+- [x] Add controlled fields for name, phone, source, requirement, budget, owner, notes.
+- [x] On submit: `POST /api/leads`.
+- [x] Show loading state while submitting.
+- [x] On success: redirect to `/leads/[id]` or `/leads`.
+- [x] On failure: show the API validation message inline.
 
 ### 5.5 Lead detail page (new)
 
-- [ ] Create `app/leads/[id]/page.tsx`.
-- [ ] Load `getLead(id)` server-side; call `notFound()` when missing.
-- [ ] Render:
-  - [ ] Lead card: name, phone, source, stage, score, reason.
-  - [ ] Qualification fields: intent, budget, timeline, location, requirement.
-  - [ ] Chat thread: inbound and outbound messages.
-  - [ ] Appointment panel: booked slot or "no booking".
-  - [ ] Follow-up panel: pending and sent follow-ups.
-  - [ ] Handoff panel: summary when `handoffRequested`.
-- [ ] Add controls:
-  - [ ] Change stage.
-  - [ ] Assign owner.
-  - [ ] Book appointment.
-  - [ ] Schedule follow-up.
-  - [ ] Trigger handoff.
-- [ ] Use small client components for controls and call the API.
+- [x] Create `app/leads/[id]/page.tsx`.
+- [x] Load `getLead(id)` server-side; call `notFound()` when missing.
+- [x] Render:
+  - [x] Lead card: name, phone, source, stage, score, reason.
+  - [x] Qualification fields: intent, budget, timeline, location, requirement.
+  - [x] Chat thread: inbound and outbound messages.
+  - [x] Appointment panel: booked slot or "no booking".
+  - [x] Follow-up panel: pending and sent follow-ups.
+  - [x] Handoff panel: summary when `handoffRequested`.
+- [x] Add controls:
+  - [x] Change stage.
+  - [x] Assign owner.
+  - [x] Book appointment.
+  - [x] Schedule follow-up.
+  - [x] Trigger handoff.
+- [x] Use small client components for controls and call the API.
 
 ### 5.6 Users
 
-- [ ] `app/users/page.tsx`: fetch `listUsers()`.
-- [ ] `components/users.tsx`: accept props instead of importing `users`.
-- [ ] `app/users/[id]/page.tsx`: fetch `getUser(id)` instead of using mock arrays.
-- [ ] Keep profile stats, assigned leads, and recent activity.
-- [ ] Add empty state for a user with no leads.
+- [x] `app/users/page.tsx`: fetch `listUsers()`.
+- [x] `components/users.tsx`: accept props instead of importing `users`.
+- [x] `app/users/[id]/page.tsx`: fetch `getUser(id)` instead of using mock arrays.
+- [x] Keep profile stats, assigned leads, and recent activity.
+- [x] Add empty state for a user with no leads.
 
 ### 5.7 Automations
 
-- [ ] `app/automations/page.tsx`: fetch `listWorkflows()`.
-- [ ] `components/automations.tsx`: accept workflows as props.
-- [ ] Replace the fake 900ms connect timeout:
-  - [ ] "Test connection" calls `GET /api/health`.
-  - [ ] Show connected/failed status.
-- [ ] Show the real n8n webhook URL from an env var if available:
-  - [ ] `NEXT_PUBLIC_APP_URL` + `/api/webhook/n8n`.
-- [ ] Make "Copy" actually copy the URL.
+- [x] `app/automations/page.tsx`: fetch `listWorkflows()`.
+- [x] `components/automations.tsx`: accept workflows as props.
+- [x] Replace the fake 900ms connect timeout:
+  - [x] "Test connection" calls `GET /api/health`.
+  - [x] Show connected/failed status.
+- [x] Show the real n8n webhook URL from an env var if available:
+  - [x] `NEXT_PUBLIC_APP_URL` + `/api/webhook/n8n`.
+- [x] Make "Copy" actually copy the URL.
 
 ### 5.8 WhatsApp simulator (new, P0)
 
-- [ ] Create `app/sim/page.tsx`.
-- [ ] Create `components/chat-sim.tsx`.
-- [ ] Add a lead selector using real leads.
-- [ ] Render the selected lead's messages.
-- [ ] Add a text input and send button.
-- [ ] On send: `POST /api/turn` with `{ leadId, message, channel: "sim" }`.
-- [ ] Render the reply immediately.
-- [ ] Show "typing…" while waiting.
-- [ ] Poll `GET /api/leads/[id]` every 1–2 seconds so the lead card fills live.
-- [ ] Show the live lead card next to the chat:
-  - [ ] score
-  - [ ] stage
-  - [ ] reason
-  - [ ] intent
-  - [ ] budget
-  - [ ] timeline
-  - [ ] location
-  - [ ] appointment
-  - [ ] handoff
-- [ ] Add a "reset demo" button.
-- [ ] Add a "time-warp +3 days" button.
+- [x] Create `app/sim/page.tsx`.
+- [x] Create `components/chat-sim.tsx`.
+- [x] Add a lead selector using real leads.
+- [x] Render the selected lead's messages.
+- [x] Add a text input and send button.
+- [x] On send: `POST /api/turn` with `{ leadId, message, channel: "sim" }`.
+- [x] Render the reply immediately.
+- [x] Show "typing…" while waiting.
+- [x] Poll `GET /api/leads/[id]` every 1–2 seconds so the lead card fills live.
+- [x] Show the live lead card next to the chat:
+  - [x] score
+  - [x] stage
+  - [x] reason
+  - [x] intent
+  - [x] budget
+  - [x] timeline
+  - [x] location
+  - [x] appointment
+  - [x] handoff
+- [x] Add a "reset demo" button.
+- [x] Add a "time-warp +3 days" button.
 
 ### 5.9 Reset button
 
-- [ ] Create `components/reset-button.tsx`.
-- [ ] On click: confirm, `POST /api/reset`, then `router.refresh()`.
-- [ ] Place it in the top bar or on `/sim`.
-- [ ] Make it visually obvious for the demo.
+- [x] Create `components/reset-button.tsx`.
+- [x] On click: confirm, `POST /api/reset`, then `router.refresh()`.
+- [x] Place it in the top bar or on `/sim`.
+- [x] Make it visually obvious for the demo.
 
 ### 5.10 Navigation and polish
 
-- [ ] Add "Simulator" to `components/Topbar.tsx`.
-- [ ] Make the theme toggle work or remove it.
+- [x] Add "Simulator" to `components/Topbar.tsx`.
+- [x] Make the theme toggle work or remove it.
 - [ ] Check mobile viewport.
 - [ ] Check type sizes are readable from 3 metres on the demo screen.
-- [ ] Remove all unused mock imports.
+- [x] Remove all unused mock imports.
 
 ### 5.11 Frontend definition of done
 
-- [ ] No page/component imports `leads`, `users`, `bubbles`, `activity`, `metaRows`, or `workflows` from `lib/data.ts`.
-- [ ] Only `lib/db/seed.ts` imports mock data.
-- [ ] Every button either works or is removed.
-- [ ] Every page has loading, empty, and error states.
-- [ ] `npm run typecheck` passes.
-- [ ] `npm run build` passes.
+- [x] No page/component imports `leads`, `users`, `bubbles`, `activity`, `metaRows`, or `workflows` from `lib/data.ts`.
+- [x] Only `lib/db/seed.ts` imports mock data.
+- [x] Every button either works or is removed.
+- [x] Every page has loading, empty, and error states.
+- [x] `npm run typecheck` passes.
+- [x] `npm run build` passes.
 
 ---
 
@@ -369,59 +362,59 @@ Important: server components should import `lib/db/*` directly, not call `/api/.
   - [ ] `POST /api/webhook/n8n` with a stable `externalId`.
   - [ ] Handle duplicate webhooks idempotently.
 - [ ] Map fields: name, phone, source, requirement, intent, budget, timeline, location, initialMessage.
-- [ ] Verify duplicate `externalId` returns the same lead.
+- [x] Verify duplicate `externalId` returns the same lead.
 - [ ] Twilio WhatsApp sandbox:
   - [ ] Join code.
   - [ ] Send test message from two phones.
   - [ ] Send reply back through the workflow.
 - [ ] If Twilio fights you for more than 45 minutes, abandon it.
 - [ ] The simulator is the primary demo. The phone is a bonus.
-- [ ] Show the webhook URL in the Automations UI.
+- [x] Show the webhook URL in the Automations UI.
 - [ ] Optional: require a shared secret header on the webhook.
 
 ---
 
 ## 8. Workstream D — Demo data, reset, and analytics (P0)
 
-- [ ] Seed one realistic tenant: Al-Noor Realty.
-- [ ] Seed leads in every stage:
-  - [ ] at least 1 HOT
-  - [ ] at least 1 QUALIFYING
-  - [ ] at least 1 BOOKED
-  - [ ] at least 1 NEW
-  - [ ] at least 1 human-handoff lead
-- [ ] Seed "Ahmed" as the main demo lead with:
-  - [ ] a conversation
-  - [ ] budget, timeline, intent
+- [x] Seed one realistic tenant: Al-Noor Realty.
+- [x] Seed leads in every stage:
+  - [x] at least 1 HOT
+  - [x] at least 1 QUALIFYING
+  - [x] at least 1 BOOKED
+  - [x] at least 1 NEW
+  - [x] at least 1 human-handoff lead
+- [x] Seed "Ahmed" as the main demo lead with:
+  - [x] a conversation
+  - [x] budget, timeline, intent
   - [ ] a viewing slot
-- [ ] Seed a silent lead for the time-warp demo.
-- [ ] Seed follow-ups at +1, +3, and +7 days.
-- [ ] Seed one appointment tomorrow at 5 PM.
-- [ ] Seed workflows for the Automations page.
-- [ ] Make `POST /api/reset` restore everything.
-- [ ] Add a big "RESET DEMO" button.
+- [x] Seed a silent lead for the time-warp demo.
+- [x] Seed follow-ups at +1, +3, and +7 days.
+- [x] Seed one appointment tomorrow at 5 PM.
+- [x] Seed workflows for the Automations page.
+- [x] Make `POST /api/reset` restore everything.
+- [x] Add a big "RESET DEMO" button.
 - [ ] Analytics screen:
-  - [ ] leads received
-  - [ ] median first response
-  - [ ] qualification rate
-  - [ ] booking rate
+  - [x] leads received
+  - [x] median first response
+  - [x] qualification rate
+  - [x] booking rate
   - [ ] follow-ups sent
-  - [ ] booked viewings today
-- [ ] Use real DB counts where possible; hardcode only the numbers that are expensive to compute.
+  - [x] booked viewings today
+- [x] Use real DB counts where possible; hardcode only the numbers that are expensive to compute.
 
 ---
 
 ## 9. Workstream E — QA and hardening (P0 before freeze)
 
-- [ ] Run `npm run typecheck`.
-- [ ] Stop the dev server, then run `npm run build`.
-- [ ] Smoke-test every endpoint with curl or a script.
+- [x] Run `npm run typecheck`.
+- [x] Run `npm run build` (passed in an isolated copy; dev server left running).
+- [x] Smoke-test every endpoint with curl or a script.
 - [ ] Test invalid JSON → 400.
-- [ ] Test missing fields → 422.
+- [x] Test missing fields → 422.
 - [ ] Test missing lead → 404.
-- [ ] Test duplicate n8n webhook → same lead.
+- [x] Test duplicate n8n webhook → same lead.
 - [ ] Test duplicate `waMessageId` → one message.
-- [ ] Test reset from a dirty DB.
+- [x] Test reset from a dirty DB.
 - [ ] Test the full 3-minute demo path 5 times in a row.
 - [ ] Test on a fresh clone:
   - [ ] `npm install`
@@ -430,25 +423,25 @@ Important: server components should import `lib/db/*` directly, not call `/api/.
   - [ ] `npm run dev`
 - [ ] Test in a mobile viewport.
 - [ ] Check browser console for errors.
-- [ ] Check server log for Prisma errors.
-- [ ] Make sure no `console.log` secrets or API keys are present.
+- [x] Check server log for Prisma errors.
+- [x] Make sure no `console.log` secrets or API keys are present.
 - [ ] Add a simple `scripts/smoke.ts` if useful.
 
 ### Error-state checklist
 
-- [ ] Chat send failure shows a retry message.
-- [ ] Empty lead list shows a friendly state.
-- [ ] Empty message thread shows a prompt.
-- [ ] Missing lead shows 404.
-- [ ] API failure on the dashboard does not blank the whole page.
-- [ ] Reset failure tells the user.
+- [x] Chat send failure shows a retry message.
+- [x] Empty lead list shows a friendly state.
+- [x] Empty message thread shows a prompt.
+- [x] Missing lead shows 404.
+- [x] API failure on the dashboard does not blank the whole page.
+- [x] Reset failure tells the user.
 
 ---
 
 ## 10. Workstream F — Deployment (P1)
 
-- [ ] Decide demo environment:
-  - [ ] Local laptop (recommended, SQLite works).
+- [x] Decide demo environment:
+  - [x] Local laptop (recommended, SQLite works).
   - [ ] Vercel (requires Postgres; SQLite will not persist).
 - [ ] If Vercel + Neon Postgres:
   - [ ] Change `prisma/schema.prisma` provider to `postgresql`.
@@ -458,8 +451,8 @@ Important: server components should import `lib/db/*` directly, not call `/api/.
   - [ ] Add `postinstall: "prisma generate"` or `build: "prisma generate && next build"`.
   - [ ] Test the deployed demo end to end.
 - [ ] Set `NEXT_PUBLIC_APP_URL` for webhook display.
-- [ ] Do not commit `.env` or `prisma/dev.db`.
-- [ ] Confirm `.env.example` is committed.
+- [x] Do not commit `.env` or `prisma/dev.db`.
+- [x] Confirm `.env.example` is committed.
 - [ ] Keep a local backup of the seeded DB if needed.
 
 ---
@@ -540,20 +533,20 @@ Never cut:
 
 The build is done when all of these are true:
 
-- [ ] `npm run typecheck` passes.
-- [ ] `npm run build` passes.
-- [ ] `npm run db:seed` produces a clean demo.
-- [ ] New lead form creates a real lead.
-- [ ] Leads list filters real data.
-- [ ] Lead detail shows real fields, messages, appointments, follow-ups.
-- [ ] Simulator sends a message and gets a reply.
-- [ ] Lead card fills live during the simulator demo.
-- [ ] Score reaches HOT with a reason.
-- [ ] Booking creates an appointment visible on screen.
-- [ ] Time-warp sends follow-ups into the thread.
-- [ ] "Talk to a human" creates a handoff summary.
-- [ ] Reset button restores the demo in under 5 seconds.
-- [ ] n8n webhook creates a lead and deduplicates retries.
+- [x] `npm run typecheck` passes.
+- [x] `npm run build` passes.
+- [x] `npm run db:seed` produces a clean demo.
+- [x] New lead form creates a real lead.
+- [x] Leads list filters real data.
+- [x] Lead detail shows real fields, messages, appointments, follow-ups.
+- [x] Simulator sends a message and gets a reply.
+- [x] Lead card fills live during the simulator demo.
+- [x] Score reaches HOT with a reason.
+- [x] Booking creates an appointment visible on screen.
+- [x] Time-warp sends follow-ups into the thread.
+- [x] "Talk to a human" creates a handoff summary.
+- [x] Reset button restores the demo in under 5 seconds.
+- [x] n8n webhook creates a lead and deduplicates retries.
 - [ ] Full demo runs end to end in under 3 minutes without manual DB edits.
 - [ ] Backup video exists.
 - [ ] The team has rehearsed at least 3 times.

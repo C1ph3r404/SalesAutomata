@@ -2,29 +2,67 @@
 
 import { useState } from "react";
 import { ArrowRight, Check, Copy, Webhook } from "lucide-react";
-import { workflows } from "@/lib/data";
+import type { Workflow } from "@/lib/types";
 import { StatusPill } from "@/components/ui";
 
-const webhookUrl = "https://salesautomata.app/webhook/n8n/8f3a-2c91";
-
 const branches = [
-  { title: "WhatsApp reply", note: "Send the scored reply inside the 24h window" },
-  { title: "CRM sync", note: "Push lead, stage and transcript to HubSpot" },
-  { title: "Human handoff", note: "Ping the owner when score crosses 80" },
+  {
+    title: "WhatsApp reply",
+    note: "Send the scored reply inside the 24h window",
+  },
+  {
+    title: "CRM sync",
+    note: "Push lead, stage and transcript to HubSpot",
+  },
+  {
+    title: "Human handoff",
+    note: "Ping the owner when the score crosses 80",
+  },
 ];
 
-export function N8nConnect() {
+export function N8nConnect({
+  workflows,
+  webhookUrl,
+}: {
+  workflows: Workflow[];
+  webhookUrl: string;
+}) {
   const [connected, setConnected] = useState(false);
   const [testing, setTesting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [copied, setCopied] = useState(false);
 
-  const test = () => {
+  async function test() {
     if (testing) return;
     setTesting(true);
-    window.setTimeout(() => {
-      setTesting(false);
+    setError(null);
+
+    try {
+      const response = await fetch("/api/health");
+      const data = await response.json();
+
+      if (!response.ok || !data.ok) {
+        throw new Error("Backend health check failed");
+      }
+
       setConnected(true);
-    }, 900);
-  };
+    } catch (cause) {
+      setConnected(false);
+      setError(cause instanceof Error ? cause.message : "Connection failed");
+    } finally {
+      setTesting(false);
+    }
+  }
+
+  async function copy() {
+    try {
+      await navigator.clipboard.writeText(webhookUrl);
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 1500);
+    } catch {
+      setError("Could not copy the webhook URL");
+    }
+  }
 
   return (
     <div>
@@ -81,9 +119,17 @@ export function N8nConnect() {
               readOnly
               value={webhookUrl}
             />
-            <button type="button" className="tag tag-ghost shrink-0">
-              <Copy className="h-3 w-3" strokeWidth={2.4} />
-              Copy
+            <button
+              type="button"
+              className="tag tag-ghost shrink-0"
+              onClick={copy}
+            >
+              {copied ? (
+                <Check className="h-3 w-3" strokeWidth={2.4} />
+              ) : (
+                <Copy className="h-3 w-3" strokeWidth={2.4} />
+              )}
+              {copied ? "Copied" : "Copy"}
             </button>
           </div>
           <p className="micro mt-2">
@@ -98,7 +144,7 @@ export function N8nConnect() {
             className="tag tag-blue"
             disabled={testing}
           >
-            {connected ? "Reconnect" : testing ? "Connecting…" : "Connect n8n"}
+            {testing ? "Checking…" : connected ? "Recheck" : "Connect n8n"}
           </button>
           <button type="button" onClick={test} className="tag tag-ghost">
             Test connection
@@ -106,10 +152,12 @@ export function N8nConnect() {
           {connected ? (
             <span className="micro flex items-center gap-1.5 text-jade">
               <Check className="h-3 w-3" strokeWidth={3} />
-              Connected · just now
+              Backend reachable
             </span>
           ) : (
-            <span className="micro">Never connected</span>
+            <span className="micro">
+              {error ?? "Backend not checked yet"}
+            </span>
           )}
         </div>
       </section>
@@ -131,14 +179,16 @@ export function N8nConnect() {
         </div>
 
         <div className="mt-4 grid gap-2 sm:grid-cols-3">
-          {branches.map((b) => (
+          {branches.map((branch) => (
             <div
-              key={b.title}
+              key={branch.title}
               className="rounded-xl border border-line bg-paper px-3 py-2.5"
             >
-              <p className="text-[11.5px] font-bold text-ink">{b.title}</p>
+              <p className="text-[11.5px] font-bold text-ink">
+                {branch.title}
+              </p>
               <p className="mt-1 text-[10.5px] leading-snug text-muted">
-                {b.note}
+                {branch.note}
               </p>
             </div>
           ))}
@@ -148,30 +198,40 @@ export function N8nConnect() {
       <section className="mt-4">
         <div className="mb-3 flex items-center justify-between">
           <p className="micro-strong">Workflows</p>
-          <span className="micro">3 in this workspace</span>
+          <span className="micro">{workflows.length} in this workspace</span>
         </div>
 
-        <div className="grid gap-3 sm:grid-cols-3">
-          {workflows.map((w) => (
-            <article key={w.id} className="panel p-4">
-              <div className="flex items-start justify-between gap-2">
-                <p className="text-[13px] font-bold leading-snug tracking-tight text-ink">
-                  {w.name}
+        {workflows.length === 0 ? (
+          <div className="panel p-5">
+            <p className="text-[12px] text-muted">
+              No workflows yet. Reset the demo or create one in n8n.
+            </p>
+          </div>
+        ) : (
+          <div className="grid gap-3 sm:grid-cols-3">
+            {workflows.map((workflow) => (
+              <article key={workflow.id} className="panel p-4">
+                <div className="flex items-start justify-between gap-2">
+                  <p className="text-[13px] font-bold leading-snug tracking-tight text-ink">
+                    {workflow.name}
+                  </p>
+                  <StatusPill
+                    tone={workflow.status === "Active" ? "jade" : "amber"}
+                  >
+                    {workflow.status}
+                  </StatusPill>
+                </div>
+                <p className="mt-2 text-[11.5px] leading-snug text-muted">
+                  {workflow.desc}
                 </p>
-                <StatusPill tone={w.status === "Active" ? "jade" : "amber"}>
-                  {w.status}
-                </StatusPill>
-              </div>
-              <p className="mt-2 text-[11.5px] leading-snug text-muted">
-                {w.desc}
-              </p>
-              <div className="mt-3 flex items-center justify-between border-t border-line pt-2.5">
-                <span className="micro">{w.runs} runs</span>
-                <span className="micro">Last {w.last}</span>
-              </div>
-            </article>
-          ))}
-        </div>
+                <div className="mt-3 flex items-center justify-between border-t border-line pt-2.5">
+                  <span className="micro">{workflow.runs} runs</span>
+                  <span className="micro">Last {workflow.last}</span>
+                </div>
+              </article>
+            ))}
+          </div>
+        )}
       </section>
     </div>
   );

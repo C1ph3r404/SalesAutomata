@@ -2,13 +2,15 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Moon, Sun, Zap } from "lucide-react";
+import { Zap } from "lucide-react";
+import { ResetButton } from "@/components/reset-button";
 
 const nav = [
   { href: "/", label: "Dashboard" },
   { href: "/leads", label: "Leads" },
   { href: "/users", label: "Users" },
   { href: "/automations", label: "Automations" },
+  { href: "/sim", label: "Simulator" },
 ];
 
 export function Topbar() {
@@ -51,18 +53,11 @@ export function Topbar() {
         </nav>
       </div>
 
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-2">
+        <ResetButton className="tag tag-ghost" />
         <Link href="/leads/new" className="tag tag-blue">
           New lead
         </Link>
-        <div className="toggle" role="group" aria-label="Theme">
-          <span className="toggle-btn toggle-btn-active">
-            <Moon className="h-4 w-4" strokeWidth={2.2} />
-          </span>
-          <span className="toggle-btn">
-            <Sun className="h-4 w-4" strokeWidth={2.2} />
-          </span>
-        </div>
       </div>
     </header>
   );

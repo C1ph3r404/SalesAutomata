@@ -1,17 +1,22 @@
 import { PageHead } from "@/components/ui";
 import { UserTable } from "@/components/users";
+import { listUsers } from "@/lib/db/users";
 
-export default function UsersPage() {
+export const dynamic = "force-dynamic";
+
+export default async function UsersPage() {
+  const users = await listUsers();
+
   return (
     <div>
       <PageHead
         eyebrow="Workspace / Users"
         title="Users"
-        right={<span className="tag tag-ghost">6 seats</span>}
+        right={<span className="tag tag-ghost">{users.length} seats</span>}
       />
 
       <div className="mt-5">
-        <UserTable />
+        <UserTable users={users} />
       </div>
     </div>
   );

@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
-import { users } from "@/lib/data";
-import { Avatar, StatusPill } from "@/components/ui";
+import type { User } from "@/lib/types";
+import { Avatar, EmptyBlock, StatusPill } from "@/components/ui";
 
 const statusTone = {
   Active: "jade",
@@ -9,7 +9,11 @@ const statusTone = {
   Paused: "amber",
 } as const;
 
-export function UserTable() {
+export function UserTable({ users }: { users: User[] }) {
+  if (users.length === 0) {
+    return <EmptyBlock label="No users yet." />;
+  }
+
   return (
     <div className="panel overflow-x-auto">
       <table className="table">
@@ -26,38 +30,40 @@ export function UserTable() {
           </tr>
         </thead>
         <tbody>
-          {users.map((u) => (
-            <tr key={u.id} className="trow">
+          {users.map((user) => (
+            <tr key={user.id} className="trow">
               <td className="tcell">
                 <Link
-                  href={`/users/${u.id}`}
+                  href={`/users/${user.id}`}
                   className="flex items-center gap-2.5"
                 >
-                  <Avatar initials={u.initials} tint={u.tint} size="sm" />
+                  <Avatar initials={user.initials} tint={user.tint} size="sm" />
                   <span>
                     <span className="block font-semibold text-ink">
-                      {u.name}
+                      {user.name}
                     </span>
                     <span className="block text-[10px] text-muted">
-                      {u.role}
+                      {user.role}
                     </span>
                   </span>
                 </Link>
               </td>
               <td className="tcell">
-                <StatusPill tone={statusTone[u.status]}>{u.status}</StatusPill>
+                <StatusPill tone={statusTone[user.status]}>
+                  {user.status}
+                </StatusPill>
               </td>
               <td className="tcell">
-                <span className="num-lg text-[17px] text-ink">{u.leads}</span>
+                <span className="num-lg text-[17px] text-ink">{user.leads}</span>
               </td>
-              <td className="tcell text-ink-2">{u.response}</td>
-              <td className="tcell text-ink-2">{u.conversion}</td>
-              <td className="tcell text-ink-2">{u.bookings}</td>
-              <td className="tcell text-muted">{u.lastActive}</td>
+              <td className="tcell text-ink-2">{user.response}</td>
+              <td className="tcell text-ink-2">{user.conversion}</td>
+              <td className="tcell text-ink-2">{user.bookings}</td>
+              <td className="tcell text-muted">{user.lastActive}</td>
               <td className="tcell text-right">
                 <Link
-                  href={`/users/${u.id}`}
-                  aria-label={`Open ${u.name}`}
+                  href={`/users/${user.id}`}
+                  aria-label={`Open ${user.name}`}
                   className="text-muted transition-colors hover:text-ink"
                 >
                   <ChevronRight className="h-4 w-4" strokeWidth={2.2} />

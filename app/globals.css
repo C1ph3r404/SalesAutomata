@@ -12,6 +12,13 @@
   --color-blue-soft: #e8edff;
   --color-yellow: #f0b429;
   --color-black: #0c0c0c;
+  --color-jade: #1c7a58;
+  --color-jade-soft: #e4f5ed;
+  --color-amber: #9a6400;
+  --color-amber-soft: #fff3d6;
+  --color-accent-soft: #e8edff;
+  --color-accent-ink: #1b44e0;
+  --color-surface-2: #f0f0ec;
 }
 
 @layer base {

@@ -1,22 +1,30 @@
 import { Check, Clock, Webhook, Zap } from "lucide-react";
+import type { Metrics } from "@/lib/types";
 
-export function StatusBar() {
+export function StatusBar({ metrics }: { metrics: Metrics }) {
+  const progress = Math.max(6, Math.min(100, metrics.qualificationRate));
+
   return (
     <section className="panel px-5 py-4">
       <div className="flex items-baseline justify-between gap-4">
         <p className="text-[12.5px] font-medium text-ink-2">
-          Syncing WhatsApp leads…
+          Syncing WhatsApp leads… {metrics.leads.total} in workspace
         </p>
-        <span className="num-lg text-[14px] text-ink">70%</span>
+        <span className="num-lg text-[14px] text-ink">
+          {metrics.qualificationRate}%
+        </span>
       </div>
 
       <div className="track mt-3">
-        <div className="fill" style={{ width: "70%" }} />
+        <div className="fill" style={{ width: `${progress}%` }} />
       </div>
 
       <div className="mt-2.5 flex items-center gap-1.5">
         <Clock className="h-3 w-3 text-muted" strokeWidth={2.4} />
-        <span className="text-[10.5px] font-medium text-muted">16 min left</span>
+        <span className="text-[10.5px] font-medium text-muted">
+          {metrics.followups.pending} follow-ups queued ·{" "}
+          {metrics.appointments.booked} viewings booked
+        </span>
       </div>
     </section>
   );
