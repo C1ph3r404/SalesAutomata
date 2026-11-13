@@ -1,4 +1,4 @@
-import { Check, Clock, Globe, Zap } from "lucide-react";
+import { Check, Clock, Webhook, Zap } from "lucide-react";
 
 export function StatusBar() {
   return (
@@ -96,25 +96,24 @@ export function DiamondMark() {
 
 export function GlobeCard() {
   return (
-    <div className="mt-4 rounded-2xl border border-line bg-panel p-4">
-      <div className="flex items-center gap-2">
-        <Globe className="h-4 w-4 text-ink" strokeWidth={2.2} />
-        <p className="micro-strong">Work in Progress</p>
+    <div className="mt-4 overflow-hidden rounded-2xl border border-line bg-panel">
+      <div className="flex items-center justify-between px-4 py-3">
+        <div className="flex items-center gap-2">
+          <Webhook className="h-4 w-4 text-ink" strokeWidth={2.2} />
+          <p className="micro-strong">n8n</p>
+        </div>
+        <span className="tag tag-ghost">Connected</span>
       </div>
-      <p className="mt-2 text-[11.5px] leading-snug text-muted">
-        Once the bot changes, don&apos;t look back.
-      </p>
-      <div className="mt-3 flex items-end justify-between">
-        <div>
-          <p className="num-lg">2H26M</p>
-          <p className="micro mt-1">Time to book</p>
-        </div>
-        <div className="flex items-center gap-1.5">
-          <span className="tag tag-ghost">USD</span>
-          <span className="grid h-6 w-6 place-items-center rounded-full bg-blue text-white shadow-[0_2px_0_0_var(--color-blue-deep)]">
-            <Check className="h-3 w-3" strokeWidth={3} />
-          </span>
-        </div>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src="/n8n.jpg"
+        alt="n8n workflow"
+        className="block h-28 w-full border-t border-line object-cover"
+      />
+      <div className="px-4 py-3">
+        <p className="text-[11.5px] leading-snug text-muted">
+          Workflow automation — trigger follow-ups, bookings and CRM sync.
+        </p>
       </div>
     </div>
   );

@@ -38,7 +38,9 @@ export function InfoA() {
 
       <div className="rule-soft my-4" />
 
-      <p className="script">آج کی لید ہی کل کی فروخت ہے۔</p>
+      <p className="text-[11.5px] leading-snug text-muted">
+        Reply instantly, qualify every lead, and book viewings automatically.
+      </p>
 
       <div className="mt-4 flex items-end justify-between border-t border-line pt-3">
         <div>
@@ -74,11 +76,10 @@ export function InfoB() {
       </div>
 
       <div className="mt-3 flex items-center justify-between rounded-xl border border-line bg-paper px-3 py-2.5">
-        <span className="flex items-center gap-2 text-[11px] font-semibold text-ink-2">
-          <DiamondMark />
-          Straight Blast
+        <span className="text-[11px] font-semibold text-ink-2">
+          Auto follow-up cadence
         </span>
-        <span className="tag tag-ghost">Armed</span>
+        <span className="tag tag-ghost">Active</span>
       </div>
 
       <GlobeCard />
