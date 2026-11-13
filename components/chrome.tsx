@@ -32,61 +32,50 @@ export function StatusBar({ metrics }: { metrics: Metrics }) {
 
 export function FooterBand() {
   return (
-    <section className="band mt-4 overflow-hidden p-7 sm:p-9">
-      <svg
-        className="pointer-events-none absolute -left-4 bottom-0 h-[120px] w-[260px] opacity-90"
-        viewBox="0 0 260 120"
-        fill="none"
+    <section className="relative mt-6 overflow-hidden">
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src="/bottom.svg"
+        alt=""
         aria-hidden="true"
-      >
-        <polygon points="0,120 40,20 70,20 20,120" fill="#fff" />
-        <polygon points="70,120 120,0 150,0 100,120" fill="#fff" opacity="0.75" />
-        <polygon points="150,120 210,30 240,30 180,120" fill="#fff" opacity="0.45" />
-      </svg>
+        className="pointer-events-none block h-auto w-full select-none"
+      />
 
-      <div className="relative flex flex-wrap gap-x-10 gap-y-7">
+      <div className="mt-4 flex flex-wrap items-start justify-between gap-x-10 gap-y-6">
         <div>
-          <p className="micro text-white/45">Rating</p>
-          <p className="num-lg mt-2 text-white">4.9</p>
-          <p className="micro mt-1.5 text-white/45">BOS</p>
+          <p className="micro">Rating</p>
+          <p className="num-lg mt-1 text-ink">4.9</p>
+          <p className="micro mt-1">BOS</p>
         </div>
 
         <div>
-          <p className="micro text-white/45">Type</p>
-          <p className="num-lg mt-2 text-white">CORE</p>
-          <p className="micro mt-1.5 flex items-center gap-1.5 text-white/45">
+          <p className="micro">Type</p>
+          <p className="num-lg mt-1 text-ink">CORE</p>
+          <p className="micro mt-1 flex items-center gap-1.5">
             Element
             <span className="inline-block h-2 w-2 rounded-full bg-blue" />
           </p>
         </div>
 
         <div className="min-w-[280px] flex-1">
-          <p className="display text-[26px] leading-none text-white">
+          <p className="display text-[26px] leading-none text-ink">
             Proceed With Cautions
           </p>
-          <p className="mt-3 max-w-[540px] text-[11.5px] leading-relaxed text-white/60">
+          <p className="mt-3 max-w-[560px] text-[11.5px] leading-relaxed text-muted">
             WhatsApp only allows free-form replies inside a 24-hour customer
             window. Outside it, every touch must be a pre-approved template —
-            which is why the follow-up cadence is template-driven, timed to
-            quiet hours, and stops the moment a lead replies or opts out.
+            so follow-ups are template-driven, timed to quiet hours, and stop
+            on reply or opt-out.
           </p>
 
-          <div className="mt-5 flex flex-wrap items-center gap-3">
-            <span className="micro text-white/45">
-              Additional buildup abilities
-            </span>
-            <span className="tag border-white/40 bg-transparent text-white">
-              Adapt
-            </span>
-            <span className="tag border-white/40 bg-transparent text-white">
+          <div className="mt-4 flex flex-wrap items-center gap-3">
+            <span className="micro">Additional buildup abilities</span>
+            <span className="tag tag-ghost">Adapt</span>
+            <span className="tag tag-ghost">
               <Check className="h-2.5 w-2.5" strokeWidth={3} />
               Verified
             </span>
           </div>
-        </div>
-
-        <div className="hidden xl:block">
-          <p className="num-xl text-white/[0.13]">01</p>
         </div>
       </div>
     </section>
@@ -114,8 +103,8 @@ export function GlobeCard() {
       </div>
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
-        src="/n8n.jpg"
-        alt="n8n workflow"
+        src="/hero.jpg"
+        alt="Workflow preview"
         className="block h-28 w-full border-t border-line object-cover"
       />
       <div className="px-4 py-3">
