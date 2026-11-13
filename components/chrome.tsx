@@ -25,7 +25,7 @@ export function StatusBar(_props: { metrics?: Metrics }) {
 
 export function FooterBand() {
   return (
-    <section className="mt-8 -mx-4 sm:-mx-6">
+    <section className="relative mt-8 -mx-4 sm:-mx-6">
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src="/bottom.svg"
@@ -33,6 +33,44 @@ export function FooterBand() {
         aria-hidden="true"
         className="block h-auto w-full"
       />
+
+      <div className="absolute inset-0 flex items-end">
+        <div className="flex w-full flex-wrap items-end gap-x-8 gap-y-4 px-6 pb-[3.5%] pt-[6%] sm:px-10 sm:pl-[26%]">
+          <div className="text-white">
+            <p className="text-[9px] font-bold uppercase tracking-[0.16em] text-white/45">
+              Rating
+            </p>
+            <p className="num-lg mt-1 text-white">4.9</p>
+          </div>
+
+          <div className="text-white">
+            <p className="text-[9px] font-bold uppercase tracking-[0.16em] text-white/45">
+              Type
+            </p>
+            <p className="num-lg mt-1 text-white">CORE</p>
+          </div>
+
+          <div className="min-w-[240px] flex-1 text-white">
+            <p className="display text-[22px] leading-none text-white sm:text-[28px]">
+              Proceed With Cautions
+            </p>
+            <p className="mt-2 max-w-[520px] text-[10.5px] leading-relaxed text-white/60 sm:text-[11.5px]">
+              WhatsApp replies are free-form inside 24 hours. Outside that
+              window, follow-ups must be pre-approved templates — timed and
+              stopped on reply or opt-out.
+            </p>
+            <div className="mt-3 flex flex-wrap items-center gap-2">
+              <span className="tag border-white/40 bg-transparent text-white">
+                Adapt
+              </span>
+              <span className="tag border-white/40 bg-transparent text-white">
+                <Check className="h-2.5 w-2.5" strokeWidth={3} />
+                Verified
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
     </section>
   );
 }
